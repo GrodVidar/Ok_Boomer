@@ -3,7 +3,6 @@ import pygame as pg
 import pygame.locals
 
 
-
 class BoomerClient(Client):
     def __init__(self):
         super().__init__()
@@ -29,9 +28,9 @@ if __name__ == "__main__":
 
     pg.init()
     screen_width = 640
-    screen_height = 420
+    screen_height = 640
     screen = pg.display.set_mode((screen_width, screen_height))
-    movement_speed = 1
+    movement_speed = 10
 
     game_on = True
     while game_on:
@@ -47,14 +46,13 @@ if __name__ == "__main__":
 
         dx, dy = 0, 0
         if pg.locals.K_DOWN in keys_pressed:
-            dy += movement_speed * dt
+            dy += movement_speed
         elif pg.locals.K_UP in keys_pressed:
-            dy -= movement_speed * dt
-
-        if pg.locals.K_RIGHT in keys_pressed:
-            dx += movement_speed * dt
+            dy -= movement_speed
+        elif pg.locals.K_RIGHT in keys_pressed:
+            dx += movement_speed
         elif pg.locals.K_LEFT in keys_pressed:
-            dx -= movement_speed * dt
+            dx -= movement_speed
 
         if pg.locals.K_SPACE in keys_pressed:
             # Place Bomb
@@ -65,7 +63,7 @@ if __name__ == "__main__":
             client.dispatch_event(
                 event_type="MOVE",
                 player_id=client.player_id,
-                new_position=((old_pos[0] + dx) % screen_width, (old_pos[1] + dy) % screen_height),
+                new_position=((old_pos[0] + dx), (old_pos[1] + dy)),
             )
 
             for player_id, player in game_state.players.items():
@@ -79,7 +77,8 @@ if __name__ == "__main__":
                     color = (255, 255, 255)
 
                 x, y = [int(coordinate) for coordinate in player['position']]
-                pg.draw.rect(screen, color, (x, y, 10, 10))
+                # print(f"x: {x} y: {y}")
+                pg.draw.rect(screen, color, (x, y, 64, 64))
         pg.display.flip()
 
     pg.quit()

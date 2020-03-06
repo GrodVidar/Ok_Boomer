@@ -7,7 +7,7 @@ initial_game_state = GameState(players={}, bombs={})
 
 def time_step(game_state, dt):
     # Make the imaginary enemy move in sinuous lines like a drunkard.
-    if len(game_state.players) < 2:
+    if len(game_state.players) < 5:
         return{}
 
 
@@ -32,19 +32,19 @@ def on_join(player_name, game_state, client_address, **kwargs):
     backend.server.dispatch_event("PLAYER_CREATED", player_id, target_client=client_address)
     if player_id == 0:
         return{
-            "players": {player_id: {"name": player_name, "position": (0, 10), "hp": 100}}
+            "players": {player_id: {"name": player_name, "position": (0, 0), "hp": 100}}
         }
     if player_id == 1:
         return{
-            "players": {player_id: {"name": player_name, "position": (10, 10), "hp": 100}}
+            "players": {player_id: {"name": player_name, "position": (570, 0), "hp": 100}}
         }
     if player_id == 2:
         return{
-            "players": {player_id: {"name": player_name, "position": (0, 0), "hp": 100}}
+            "players": {player_id: {"name": player_name, "position": (0, 570), "hp": 100}}
         }
     if player_id == 3:
         return{
-            "players": {player_id: {"name": player_name, "position": (10, 0), "hp": 100}}
+            "players": {player_id: {"name": player_name, "position": (570, 570), "hp": 100}}
         }
 
 
