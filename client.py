@@ -20,7 +20,8 @@ def setup_player(player_id):
 def draw_window(screen, players):
     screen.fill((0, 0, 0))
     for i in players:
-        pg.draw.rect(screen, i.color, (i.x, i.y, i.width, i.height))
+        pg.draw.rect(screen, players[i].color,
+                     (players[i].x, players[i].y, players[i].width, players[i].height))
     pg.display.update()
 
 
@@ -42,8 +43,7 @@ def main():
     screen = pg.display.set_mode((screen_width, screen_height))
     my_player = setup_player(client.player_id)
     game_on = True
-    players = set()
-    players.add(my_player)
+    players = {client.player_id: my_player}
     while game_on:
         dt = clock.tick(60)
         draw_window(screen, players)
@@ -62,13 +62,13 @@ def main():
             for player_id, player in game_state.players.items():
                 x, y = [int(c) for c in player['position']]
                 if player_id == 0 and client.player_id != 0:
-                    players.add(Player(x, y, 64, 64, (50, 255, 50)))
+                    players[player_id] = Player(x, y, 64, 64, (50, 255, 50))
                 elif player_id == 1 and client.player_id != 1:
-                    players.add(Player(x, y, 64, 64, (255, 50, 50)))
+                    players[player_id] = Player(x, y, 64, 64, (255, 50, 50))
                 elif player_id == 2 and client.player_id != 2:
-                    players.add(Player(x, y, 64, 64, (50, 50, 255)))
+                    players[player_id] = Player(x, y, 64, 64, (50, 50, 255))
                 elif player_id == 3 and client.player_id != 3:
-                    players.add(Player(x, y, 64, 64, (255, 255, 255)))
+                    players[player_id] = Player(x, y, 64, 64, (255, 255, 255))
                 if player_id == client.player_id:
                     my_player.x, my_player.y = [int(c) for c in player['position']]
                 #print(f"x: {x} y: {y}")
