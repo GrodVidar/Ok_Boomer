@@ -2,11 +2,7 @@ import math
 from pygase import GameState, Backend
 
 
-initial_game_state = GameState(players={}, bombs={})
-
-
 def time_step(game_state, dt):
-    # Make the imaginary enemy move in sinuous lines like a drunkard.
     if len(game_state.players) < 5:
         return{}
 
@@ -15,14 +11,8 @@ def on_move(player_id, new_position, **kwargs):
     return {"players": {player_id: {"position": new_position}}}
 
 
-backend = Backend(initial_game_state, time_step, event_handlers={'MOVE': on_move})
-
-
 def on_bomb(player_id, **kwargs):
     pass
-
-
-backend.game_state_machine.register_event_handler("BOMB", on_bomb)
 
 
 def on_join(player_name, game_state, client_address, **kwargs):
@@ -48,7 +38,9 @@ def on_join(player_name, game_state, client_address, **kwargs):
         }
 
 
-backend.game_state_machine.register_event_handler("JOIN", on_join)
-
 if __name__ == "__main__":
+    initial_game_state = GameState(players={}, bombs={})
+    backend = Backend(initial_game_state, time_step, event_handlers={'MOVE': on_move})
+    backend.game_state_machine.register_event_handler("BOMB", on_bomb)
+    backend.game_state_machine.register_event_handler("JOIN", on_join)
     backend.run('', port=1337)
