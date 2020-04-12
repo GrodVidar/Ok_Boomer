@@ -11,9 +11,9 @@ class Player(pg.sprite.Sprite):
         # self.rect.center = (x+32, y+32)
         self.x = x
         self.y = y
-        self.__color = color
-        self.__width = 64
-        self.__height = 64
+        self.color = color
+        self.width = 64
+        self.height = 64
         self.rect = (x, y, self.width, self.height)
         self.speed = 10
         self.cd = 3

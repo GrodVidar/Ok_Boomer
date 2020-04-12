@@ -14,7 +14,7 @@ def setup_player(player_id):
     elif player_id == 2:
         return Player(0, 570, (50, 50, 255))
     elif player_id == 3:
-        return Player(570, 570, 64, 64 (255, 255, 255))
+        return Player(570, 570, (255, 255, 255))
 
 
 def draw_window(screen, players, all_sprites):
@@ -75,7 +75,7 @@ def main():
                     players[player_id] = Player(x, y, (255, 255, 255))
                 if player_id == client.player_id:
                     my_player.x, my_player.y = [int(c) for c in player['position']]
-                #print(f"x: {x} y: {y}")
+                # print(f"x: {x} y: {y}")
     pg.quit()
     client.disconnect(shutdown_server=True)
 
