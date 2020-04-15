@@ -28,17 +28,17 @@ def on_join(player_name, game_state, client_address, **kwargs):
         }
     if player_id == 1:
         return{
-            "players": {player_id: {"name": player_name, "position": (570, 0), "hp": 100,
+            "players": {player_id: {"name": player_name, "position": (526, 0), "hp": 100,
                                     "power_ups": {"faster": False, "more_bombs": False}}}
         }
     if player_id == 2:
         return{
-            "players": {player_id: {"name": player_name, "position": (0, 570), "hp": 100,
+            "players": {player_id: {"name": player_name, "position": (0, 526), "hp": 100,
                                     "power_ups": {"faster": False, "more_bombs": False}}}
         }
     if player_id == 3:
         return{
-            "players": {player_id: {"name": player_name, "position": (570, 570), "hp": 100,
+            "players": {player_id: {"name": player_name, "position": (526, 526), "hp": 100,
                                     "power_ups": {"faster": False, "more_bombs": False}}}
         }
 
