@@ -1,8 +1,8 @@
 from pygase import Client
 import pygame as pg
 import pygame.locals
-from time import sleep
 from player import Player
+import time
 from boomer_client import BoomerClient
 
 
@@ -17,14 +17,21 @@ def setup_player(player_id):
         return Player(526, 526, (255, 255, 255))
 
 
-def draw_window(screen, players, walls):
+def draw_window(screen, players, walls, bombs):
     screen.fill((0, 0, 0))
-    for i in walls:
-        pg.draw.rect(screen, (255, 255, 255), i)
-    for i in players:
-        pg.draw.rect(screen, players[i].color,
-                     players[i].rect)
-    pg.display.update()
+    for wall in walls:
+        pg.draw.rect(screen, (255, 255, 255), wall)
+    for player in players:
+        pg.draw.rect(screen, players[player].color,
+                     players[player].rect)
+        if player in bombs:
+            if 'exploded' in bombs[player]:
+                if not bombs[player]['exploded']:
+                    pg.draw.rect(screen, (255, 255, 0), (bombs[player]['position'][0], bombs[player]['position'][1], 20, 20))
+                else:
+                    print("Poof")
+                    bombs[player] = {}
+        pg.display.update()
 
 
 def main():
@@ -47,6 +54,7 @@ def main():
     my_player = setup_player(client.player_id)
     game_on = True
     players = {client.player_id: my_player}
+    bombs = {}
 
     walls = [pg.Rect(64, 64, 64, 64), pg.Rect(192, 64, 64, 64),
              pg.Rect(320, 64, 64, 64), pg.Rect(448, 64, 64, 64),
@@ -59,7 +67,7 @@ def main():
 
     while game_on:
         dt = clock.tick(60)
-        draw_window(screen, players, walls)
+        draw_window(screen, players, walls, bombs)
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 game_on = False
@@ -83,9 +91,14 @@ def main():
                     players[player_id] = Player(x, y, (255, 255, 255))
                 if player_id == client.player_id:
                     my_player.rect.x, my_player.rect.y = [int(c) for c in player['position']]
-                # print(f"x: {x} y: {y}")
+
+            for player_id, bomb in game_state.bombs.items():
+                if not bomb['exploded']:
+                    bombs[player_id] = bomb
+
+
     pg.quit()
-    client.disconnect(shutdown_server=True)
+    client.disconnect(shutdown_server=False)
 
 
 if __name__ == "__main__":

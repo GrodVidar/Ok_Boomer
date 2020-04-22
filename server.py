@@ -1,9 +1,21 @@
 from pygase import GameState, Backend
+import time
+
+bombs = []
 
 
 def time_step(game_state, dt):
-    if len(game_state.players) < 5:
+    if len(game_state.players) < 1:
         return{}
+    else:
+        for player_id, bomb in game_state.bombs.items():
+            # print(bomb)
+            if not bomb['exploded']:
+                bomb['countdown'] -= dt
+                if bomb['countdown'] <= 0:
+                    bomb['exploded'] = True
+                    return {'bombs': {player_id: bomb}}
+        return {}
 
 
 def on_move(player_id, new_position, **kwargs):
@@ -12,8 +24,7 @@ def on_move(player_id, new_position, **kwargs):
 
 def on_bomb(player_id, position, **kwargs):
     print(f"bomb placed by: {player_id} at {position}")
-
-    return {"bombs": {player_id: {"position": position}}}
+    return {"bombs": {player_id: {"position": position, "countdown": 2.0, "exploded": False}}}
 
 
 def on_join(player_name, game_state, client_address, **kwargs):

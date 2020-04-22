@@ -38,7 +38,7 @@ class Player:
         client.dispatch_event(
             event_type="BOMB",
             player_id=client.player_id,
-            position=(self.rect.centerx, self.rect.centery)
+            position=self.rect.center
         )
 
     def check_collision(self, walls, dir):
