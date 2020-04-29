@@ -5,33 +5,67 @@ from player import Player
 import time
 from boomer_client import BoomerClient
 
+explosions = []
+
 
 def setup_player(player_id):
     if player_id == 0:
-        return Player(0, 0, (50, 255, 50))
+        return Player(0, 0, (50, 255, 50), 100)
     elif player_id == 1:
-        return Player(526, 0, (255, 50, 50))
+        return Player(526, 0, (255, 50, 50), 100)
     elif player_id == 2:
-        return Player(0, 526, (50, 50, 255))
+        return Player(0, 526, (50, 50, 255), 100)
     elif player_id == 3:
-        return Player(526, 526, (255, 255, 255))
+        return Player(526, 526, (255, 255, 255), 100)
+
+
+def display_hp(player, hp):
+    text_rect = hp.get_rect()
+    if player == 0:
+        text_rect.topleft = (68, 76)
+    elif player == 1:
+        text_rect.topleft = (452, 76)
+    elif player == 2:
+        text_rect.topleft = (68, 460)
+    elif player == 3:
+        text_rect.topleft = (452, 460)
+    return text_rect
 
 
 def draw_window(screen, players, walls, bombs):
+    wall_points = [86, 214, 342, 470]
     screen.fill((0, 0, 0))
+    font = pg.font.Font("freesansbold.ttf", 32)
     for wall in walls:
         pg.draw.rect(screen, (255, 255, 255), wall)
     for player in players:
-        pg.draw.rect(screen, players[player].color,
-                     players[player].rect)
+        if players[player].hp > 0:
+            pg.draw.rect(screen, players[player].color,
+                         players[player].rect)
+        hp = font.render(str(players[player].hp), True, players[player].color)
+        screen.blit(hp, display_hp(player, hp))
         if player in bombs:
             if 'exploded' in bombs[player]:
                 if not bombs[player]['exploded']:
-                    pg.draw.rect(screen, (255, 255, 0), (bombs[player]['position'][0], bombs[player]['position'][1], 20, 20))
+                    pg.draw.rect(screen, (255, 255, 0), (bombs[player]['position'][0],
+                                                         bombs[player]['position'][1], 20, 20))
                 else:
-                    print("Poof")
+                    explosions.append({'x': bombs[player]['position'][0],
+                                       'y': bombs[player]['position'][1],
+                                       'time': time.time()})
                     bombs[player] = {}
-        pg.display.update()
+    result = []
+    for explosion in explosions:
+        if time.time() - explosion['time'] < 2:
+            result.append(explosion)
+            if explosion['x'] not in wall_points:
+                # print(explosion['x'])
+                pg.draw.rect(screen, (255, 101, 0), (explosion['x']-6, explosion['y']-118, 30, 256))
+            if explosion['y'] not in wall_points:
+                pg.draw.rect(screen, (255, 101, 0), (explosion['x']-118, explosion['y']-6, 256, 30))
+        else:
+            del explosions[explosions.index(explosion)]
+    pg.display.update()
 
 
 def main():
@@ -81,16 +115,18 @@ def main():
 
             for player_id, player in game_state.players.items():
                 x, y = [int(c) for c in player['position']]
+                hp = player['hp']
                 if player_id == 0 and client.player_id != 0:
-                    players[player_id] = Player(x, y, (50, 255, 50))
+                    players[player_id] = Player(x, y, (50, 255, 50), hp)
                 elif player_id == 1 and client.player_id != 1:
-                    players[player_id] = Player(x, y, (255, 50, 50))
+                    players[player_id] = Player(x, y, (255, 50, 50), hp)
                 elif player_id == 2 and client.player_id != 2:
-                    players[player_id] = Player(x, y, (50, 50, 255))
+                    players[player_id] = Player(x, y, (50, 50, 255), hp)
                 elif player_id == 3 and client.player_id != 3:
-                    players[player_id] = Player(x, y, (255, 255, 255))
+                    players[player_id] = Player(x, y, (255, 255, 255), hp)
                 if player_id == client.player_id:
-                    my_player.rect.x, my_player.rect.y = [int(c) for c in player['position']]
+                    my_player.rect.x, my_player.rect.y = x, y
+                    my_player.hp = hp
 
             for player_id, bomb in game_state.bombs.items():
                 if not bomb['exploded']:
