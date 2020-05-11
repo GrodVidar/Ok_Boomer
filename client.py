@@ -10,13 +10,13 @@ explosions = []
 
 def setup_player(player_id):
     if player_id == 0:
-        return Player(0, 0, (50, 255, 50), 100)
+        return Player(0, 0, 0, 100)
     elif player_id == 1:
-        return Player(526, 0, (255, 50, 50), 100)
+        return Player(526, 0, 1, 100)
     elif player_id == 2:
-        return Player(0, 526, (50, 50, 255), 100)
+        return Player(0, 526, 2, 100)
     elif player_id == 3:
-        return Player(526, 526, (255, 255, 255), 100)
+        return Player(526, 526, 3, 100)
 
 
 def display_hp(player, hp):
@@ -74,7 +74,7 @@ def main():
     player_name = input("Player name: ")
 
     client = BoomerClient()
-    client.connect_in_thread(hostname=host, port=1337)
+    client.connect_in_thread(hostname=host, port=28960)
     client.dispatch_event("JOIN", player_name)
     while client.player_id is None:
         pass
@@ -116,17 +116,11 @@ def main():
             for player_id, player in game_state.players.items():
                 x, y = [int(c) for c in player['position']]
                 hp = player['hp']
-                if player_id == 0 and client.player_id != 0:
-                    players[player_id] = Player(x, y, (50, 255, 50), hp)
-                elif player_id == 1 and client.player_id != 1:
-                    players[player_id] = Player(x, y, (255, 50, 50), hp)
-                elif player_id == 2 and client.player_id != 2:
-                    players[player_id] = Player(x, y, (50, 50, 255), hp)
-                elif player_id == 3 and client.player_id != 3:
-                    players[player_id] = Player(x, y, (255, 255, 255), hp)
-                if player_id == client.player_id:
-                    my_player.rect.x, my_player.rect.y = x, y
-                    my_player.hp = hp
+                if player_id in players:
+                    players[player_id].rect.x, players[player_id].rect.y = x, y
+                    players[player_id].hp = hp
+                else:
+                    players[player_id] = Player(x, y, player_id, hp)
 
             for player_id, bomb in game_state.bombs.items():
                 if not bomb['exploded']:

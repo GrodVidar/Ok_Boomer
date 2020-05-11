@@ -9,8 +9,15 @@ def get_bomb_spot(origin_x, origin_y):
 
 
 class Player:
-    def __init__(self, x, y, color, hp):
-        self.color = color
+    def __init__(self, x, y, player_id, hp):
+        if player_id == 0:
+            self.color = (50, 50, 255)
+        elif player_id == 1:
+            self.color = (50, 255, 50)
+        elif player_id == 2:
+            self.color = (255, 50, 50)
+        elif player_id == 3:
+            self.color = (255, 211, 25)
         self.width = 50
         self.height = 50
         self.rect = pg.Rect(x, y, self.width, self.height)

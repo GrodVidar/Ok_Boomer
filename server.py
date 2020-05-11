@@ -101,6 +101,6 @@ if __name__ == "__main__":
     backend.game_state_machine.register_event_handler("BOMB", on_bomb)
     backend.game_state_machine.register_event_handler("JOIN", on_join)
     try:
-        backend.run('', port=1337)
+        backend.run('', port=28960)
     except ConnectionResetError:
         pass
