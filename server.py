@@ -7,15 +7,13 @@ wall_points = [86, 214, 342, 470]
 
 
 def damage_player(players):
-    info = []
     for player in players:
         print("BAM")
         players[player]['hp'] -= 10
         print(players[player]['hp'])
         players[player]['damaged'] = time.time()
-        info.append({player: {'hp': players[player]['hp'], 'damaged': players[player]['damaged']}})
         # info[player] = {'players': {player: {"hp": stats['hp'], 'damaged': stats['damaged']}}}
-    return info
+    return players
 
 
 def time_step(game_state, dt):
@@ -67,11 +65,10 @@ def time_step(game_state, dt):
                                 players_damaged[player_id] = stats
                                 # return damage_player(stats, player_id)
                 else:
-                    return {'explosions': {player_id: None}}
-        info = damage_player(players_damaged)
+                    return {'explosions': {pid: None}}
+        players_damaged = damage_player(players_damaged)
         # print(game_state.players)
-        return {'players': x for x in info}
-    return {}
+        return {'players': players_damaged}
 
 
 def on_move(player_id, new_position, **kwargs):
