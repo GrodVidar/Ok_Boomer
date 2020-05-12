@@ -45,21 +45,16 @@ def draw_window(screen, players, walls, bombs):
         hp = font.render(str(players[player].hp), True, players[player].color)
         screen.blit(hp, display_hp(player, hp))
         if player in bombs:
-            if 'exploded' in bombs[player]:
-                if not bombs[player]['exploded']:
-                    pg.draw.rect(screen, (255, 255, 0), (bombs[player]['position'][0],
-                                                         bombs[player]['position'][1], 20, 20))
-                else:
-                    explosions.append({'x': bombs[player]['position'][0],
-                                       'y': bombs[player]['position'][1],
-                                       'time': time.time()})
-                    bombs[player] = {}
-    result = []
+            if bombs[player] is not None:
+                pg.draw.rect(screen, (255, 255, 0), (bombs[player]['position'][0],
+                                                     bombs[player]['position'][1], 20, 20))
     for explosion in explosions:
-        if time.time() - explosion['time'] < 2:
-            result.append(explosion)
+        print(explosion)
+        print(time.time() - explosion['countdown'])
+        if time.time() - explosion['countdown'] < 2:
+            print("here")
             if explosion['x'] not in wall_points:
-                # print(explosion['x'])
+                print(explosion['x'])
                 pg.draw.rect(screen, (255, 101, 0), (explosion['x']-6, explosion['y']-118, 30, 256))
             if explosion['y'] not in wall_points:
                 pg.draw.rect(screen, (255, 101, 0), (explosion['x']-118, explosion['y']-6, 256, 30))
@@ -123,8 +118,18 @@ def main():
                     players[player_id] = Player(x, y, player_id, hp)
 
             for player_id, bomb in game_state.bombs.items():
-                if not bomb['exploded']:
+                if bomb is not None:
                     bombs[player_id] = bomb
+                else:
+                    bombs[player_id] = None
+
+            for player_id, explosion in game_state.explosions.items():
+                if explosion is not None:
+                    if explosion['id'] not in explosions:
+                        explosions.append({'id': explosion['id'],
+                                           'x': explosion['position'][0],
+                                           'y': explosion['position'][1],
+                                           'countdown': time.time()})
 
 
     pg.quit()
