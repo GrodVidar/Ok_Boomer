@@ -29,7 +29,8 @@ def time_step(game_state, dt):
                     if bomb['countdown'] <= 0:
                         bomb['exploded'] = True
                         return {'bombs': {player_id: None},
-                                'explosions': {player_id: {'id':randint(1,50), 'position': bomb['position'], 'countdown': 2.0}}}
+                                'explosions': {player_id: {'id': randint(1, 50),
+                                                           'position': bomb['position'], 'countdown': 2.0}}}
         players_damaged = {}
         for pid, explosion in game_state.explosions.items():
             if explosion is not None:
@@ -68,6 +69,7 @@ def time_step(game_state, dt):
                 else:
                     return {'explosions': {player_id: None}}
         info = damage_player(players_damaged)
+        # print(game_state.players)
         return {'players': x for x in info}
     return {}
 
@@ -88,23 +90,19 @@ def on_join(player_name, game_state, client_address, **kwargs):
     backend.server.dispatch_event("PLAYER_CREATED", player_id, target_client=client_address)
     if player_id == 0:
         return{
-            "players": {player_id: {"name": player_name, "position": (0, 0), "hp": 100,
-                                    "power_ups": {"faster": False, "more_bombs": False}, 'damaged': 0}}
+            "players": {player_id: {"name": player_name, "position": (0, 0), "hp": 100, 'damaged': 0}}
         }
     if player_id == 1:
         return{
-            "players": {player_id: {"name": player_name, "position": (526, 0), "hp": 100,
-                                    "power_ups": {"faster": False, "more_bombs": False}, 'damaged': 0}}
+            "players": {player_id: {"name": player_name, "position": (526, 0), "hp": 100, 'damaged': 0}}
         }
     if player_id == 2:
         return{
-            "players": {player_id: {"name": player_name, "position": (0, 526), "hp": 100,
-                                    "power_ups": {"faster": False, "more_bombs": False}, 'damaged': 0}}
+            "players": {player_id: {"name": player_name, "position": (0, 526), "hp": 100, 'damaged': 0}}
         }
     if player_id == 3:
         return{
-            "players": {player_id: {"name": player_name, "position": (526, 526), "hp": 100,
-                                    "power_ups": {"faster": False, "more_bombs": False}, 'damaged': 0}}
+            "players": {player_id: {"name": player_name, "position": (526, 526), "hp": 100, 'damaged': 0}}
         }
 
 

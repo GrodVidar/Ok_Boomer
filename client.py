@@ -49,12 +49,12 @@ def draw_window(screen, players, walls, bombs):
                 pg.draw.rect(screen, (255, 255, 0), (bombs[player]['position'][0],
                                                      bombs[player]['position'][1], 20, 20))
     for explosion in explosions:
-        print(explosion)
-        print(time.time() - explosion['countdown'])
+        # (explosion)
+        # print(time.time() - explosion['countdown'])
         if time.time() - explosion['countdown'] < 2:
-            print("here")
+            # print("here")
             if explosion['x'] not in wall_points:
-                print(explosion['x'])
+                # print(explosion['x'])
                 pg.draw.rect(screen, (255, 101, 0), (explosion['x']-6, explosion['y']-118, 30, 256))
             if explosion['y'] not in wall_points:
                 pg.draw.rect(screen, (255, 101, 0), (explosion['x']-118, explosion['y']-6, 256, 30))
@@ -111,6 +111,7 @@ def main():
             for player_id, player in game_state.players.items():
                 x, y = [int(c) for c in player['position']]
                 hp = player['hp']
+                # print(game_state.players)
                 if player_id in players:
                     players[player_id].rect.x, players[player_id].rect.y = x, y
                     players[player_id].hp = hp
