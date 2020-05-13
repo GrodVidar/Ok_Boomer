@@ -2,6 +2,8 @@ import pygame as pg
 import time
 
 
+# calculates the placement for the bomb the player places
+# so that the bomb will be centered and not stuck inside of a wall.
 def get_bomb_spot(origin_x, origin_y):
     x = (int(origin_x/64)*64) + 32 - 10
     y = (int(origin_y/64)*64) + 32 - 10
@@ -47,6 +49,8 @@ class Player:
                 elif time.time() - self.last_cast > self.cd:
                     self.place_bomb(client)
 
+    # when the player presses space, this will trigger, which tells the server what player
+    # and where the player places the bomb.
     def place_bomb(self, client):
         if self.hp > 0:
             self.last_cast = time.time()
@@ -56,6 +60,8 @@ class Player:
                 position=(get_bomb_spot(self.rect.centerx, self.rect.centery))
             )
 
+    # method that checks if the player is going in a specific direction, if there is a wall
+    # in its path, this will stop the player from walking into a wall.
     def check_collision(self, walls, dir):
         will_collide = False
         for i in walls:

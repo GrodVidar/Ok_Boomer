@@ -1,6 +1,7 @@
 from pygase import Client
 
 
+# this class is what acts as the bridge of the functions called from the server and from the game.
 class BoomerClient(Client):
     def __init__(self):
         super().__init__()

@@ -6,16 +6,15 @@ bombs = []
 wall_points = [86, 214, 342, 470]
 
 
+# function called to subtract the damage made from the bombs to the player hit.
 def damage_player(players):
     for player in players:
-        print("BAM")
         players[player]['hp'] -= 10
-        print(players[player]['hp'])
         players[player]['damaged'] = time.time()
-        # info[player] = {'players': {player: {"hp": stats['hp'], 'damaged': stats['damaged']}}}
     return players
 
 
+# function called by the server each update sequence.
 def time_step(game_state, dt):
     if len(game_state.players) < 1:
         return{}
@@ -67,19 +66,20 @@ def time_step(game_state, dt):
                 else:
                     return {'explosions': {pid: None}}
         players_damaged = damage_player(players_damaged)
-        # print(game_state.players)
         return {'players': players_damaged}
 
 
+# called from the client to update the players position.
 def on_move(player_id, new_position, **kwargs):
     return {"players": {player_id: {"position": new_position}}}
 
 
+# called from the client to place a bomb on the map.
 def on_bomb(player_id, position, **kwargs):
-    print(f"bomb placed by: {player_id} at {position}")
     return {"bombs": {player_id: {"position": position, "countdown": 3.0, "exploded": False}}}
 
 
+# called once a player starts the script which assigns the player a fitting id.
 def on_join(player_name, game_state, client_address, **kwargs):
     print(f"{player_name} has joined.")
     player_id = len(game_state.players)

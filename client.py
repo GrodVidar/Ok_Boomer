@@ -1,6 +1,4 @@
-from pygase import Client
 import pygame as pg
-import pygame.locals
 from player import Player
 import time
 from boomer_client import BoomerClient
@@ -8,6 +6,8 @@ from boomer_client import BoomerClient
 explosions = []
 
 
+# depending on what player_id the server gives the client this function will
+# assign you with the right character on the display
 def setup_player(player_id):
     if player_id == 0:
         return Player(0, 0, 0, 100)
@@ -19,6 +19,7 @@ def setup_player(player_id):
         return Player(526, 526, 3, 100)
 
 
+# function that gets the rectangle suited for the passed in players hp status display
 def display_hp(player, hp):
     text_rect = hp.get_rect()
     if player == 0:
@@ -32,6 +33,7 @@ def display_hp(player, hp):
     return text_rect
 
 
+# function that handles all the graphics in the game
 def draw_window(screen, players, walls, bombs):
     wall_points = [86, 214, 342, 470]
     screen.fill((0, 0, 0))
@@ -49,12 +51,8 @@ def draw_window(screen, players, walls, bombs):
                 pg.draw.rect(screen, (255, 255, 0), (bombs[player]['position'][0],
                                                      bombs[player]['position'][1], 20, 20))
     for explosion in explosions:
-        # (explosion)
-        # print(time.time() - explosion['countdown'])
         if time.time() - explosion['countdown'] < 2:
-            # print("here")
             if explosion['x'] not in wall_points:
-                # print(explosion['x'])
                 pg.draw.rect(screen, (255, 101, 0), (explosion['x']-6, explosion['y']-118, 30, 256))
             if explosion['y'] not in wall_points:
                 pg.draw.rect(screen, (255, 101, 0), (explosion['x']-118, explosion['y']-6, 256, 30))
@@ -63,8 +61,8 @@ def draw_window(screen, players, walls, bombs):
     pg.display.update()
 
 
+# where everything is set up then looped
 def main():
-    # host = input("Host(IPv4 or name): ")
     host = "127.0.0.1"
     player_name = input("Player name: ")
 
@@ -111,7 +109,6 @@ def main():
             for player_id, player in game_state.players.items():
                 x, y = [int(c) for c in player['position']]
                 hp = player['hp']
-                # print(game_state.players)
                 if player_id in players:
                     players[player_id].rect.x, players[player_id].rect.y = x, y
                     players[player_id].hp = hp
@@ -131,7 +128,6 @@ def main():
                                            'x': explosion['position'][0],
                                            'y': explosion['position'][1],
                                            'countdown': time.time()})
-
 
     pg.quit()
     client.disconnect(shutdown_server=False)
