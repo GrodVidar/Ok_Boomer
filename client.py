@@ -6,6 +6,7 @@ from boomer_client import BoomerClient
 explosions = []
 
 
+
 # depending on what player_id the server gives the client this function will
 # assign you with the right character on the display
 def setup_player(player_id):
@@ -34,7 +35,7 @@ def display_hp(player, hp):
 
 
 # function that handles all the graphics in the game
-def draw_window(screen, players, walls, bombs):
+def draw_window(screen, players, walls, bombs, winner):
     wall_points = [86, 214, 342, 470]
     screen.fill((0, 0, 0))
     font = pg.font.Font("freesansbold.ttf", 32)
@@ -58,6 +59,10 @@ def draw_window(screen, players, walls, bombs):
                 pg.draw.rect(screen, (255, 101, 0), (explosion['x']-118, explosion['y']-6, 256, 30))
         else:
             del explosions[explosions.index(explosion)]
+    if winner:
+        winner_rect = pg.draw.rect(screen, (192, 192, 192), (145, 270, 300, 40))
+        winner_name = font.render(f"     {winner} Won!!", True, (0, 0, 0))
+        screen.blit(winner_name, winner_rect)
     pg.display.update()
 
 
@@ -72,6 +77,7 @@ def main():
     while client.player_id is None:
         pass
 
+    winner = None
     clock = pg.time.Clock()
     pg.init()
     screen_width = 576
@@ -93,8 +99,8 @@ def main():
              pg.Rect(320, 192, 64, 64), pg.Rect(192, 320, 64, 64)]
 
     while game_on:
-        dt = clock.tick(60)
-        draw_window(screen, players, walls, bombs)
+        clock.tick(60)
+        draw_window(screen, players, walls, bombs, winner)
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 game_on = False
@@ -128,6 +134,9 @@ def main():
                                            'x': explosion['position'][0],
                                            'y': explosion['position'][1],
                                            'countdown': time.time()})
+            for player_id, winner_name in game_state.winner.items():
+                if winner_name:
+                    winner = winner_name
 
     pg.quit()
     client.disconnect(shutdown_server=False)
