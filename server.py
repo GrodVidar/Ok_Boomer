@@ -98,7 +98,7 @@ def on_join(player_name, game_state, client_address, **kwargs):
         backend.server.dispatch_event("PLAYER_CREATED", player_id, target_client=client_address)
         if player_id == 0:
             return{
-                "players": {player_id: {"name": player_name, "position": (0, 0), "hp": 10, 'damaged': 0}}
+                "players": {player_id: {"name": player_name, "position": (0, 0), "hp": 100, 'damaged': 0}}
             }
         if player_id == 1:
             return{
